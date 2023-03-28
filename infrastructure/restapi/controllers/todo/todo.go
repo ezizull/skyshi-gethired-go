@@ -16,17 +16,7 @@ type Controller struct {
 	TodoService useCaseTodo.Service
 }
 
-// NewTodo godoc
-// @Tags todo
-// @Summary Create New Todo
-// @Descriptioniption Create new todo on the system
-// @Accept  json
-// @Produce  json
-// @Param data body NewTodoRequest true "body data"
-// @Success 200 {object} domainTodo.Todo
-// @Failure 400 {object} MessageResponse
-// @Failure 500 {object} MessageResponse
-// @Router /todo [post]
+// NewTodo is the controller to create a todo
 func (c *Controller) NewTodo(ctx *gin.Context) {
 	var request NewTodoRequest
 
@@ -50,25 +40,11 @@ func (c *Controller) NewTodo(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, domainTodo)
 }
 
-// GetAllTodos godoc
-// @Tags todo
-// @Summary Get all Todos
-// @Description Get all Todos on the system
-// @Param   limit  query   string  true        "limit"
-// @Param   page  query   string  true        "page"
-// @Success 200 {object} []useCaseTodo.PaginationResultTodo
-// @Failure 400 {object} MessageResponse
-// @Failure 500 {object} MessageResponse
-// @Router /todo [get]
+// GetAllTodos is the controller to getall todo
 func (c *Controller) GetAllTodos(ctx *gin.Context) {
-	var (
-		todos []domainTodo.Todo
-		err   error
-	)
-
 	activityGroupIDStr := ctx.DefaultQuery("activity_group_id", "0")
 	if activityGroupIDStr != "0" {
-		todos, err = c.TodoService.GetByActivity(activityGroupIDStr)
+		todos, err := c.TodoService.GetByActivity(activityGroupIDStr)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, controllers.ErrorResponse{
 				Status:  "Error",
@@ -85,7 +61,7 @@ func (c *Controller) GetAllTodos(ctx *gin.Context) {
 		return
 	}
 
-	todos, err = c.TodoService.GetAll()
+	todos, err := c.TodoService.GetAll()
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, controllers.ErrorResponse{
 			Status:  "Error",
@@ -101,15 +77,7 @@ func (c *Controller) GetAllTodos(ctx *gin.Context) {
 	})
 }
 
-// GetTodoByID godoc
-// @Tags todo
-// @Summary Get todos by ID
-// @Descriptioniption Get Todos by ID on the system
-// @Param todo_id path int true "id of todo"
-// @Success 200 {object} domainTodo.Todo
-// @Failure 400 {object} MessageResponse
-// @Failure 500 {object} MessageResponse
-// @Router /todo/{todo_id} [get]
+// GetTodoByID is the controller to get a todo by id
 func (c *Controller) GetTodoByID(ctx *gin.Context) {
 	todoID, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
