@@ -18,26 +18,38 @@ type Controller struct {
 
 // NewTodo is the controller to create a todo
 func (c *Controller) NewTodo(ctx *gin.Context) {
-	var request NewTodoRequest
-
-	if err := controllers.BindJSON(ctx, &request); err != nil {
-		appError := domainError.NewAppError(err, domainError.ValidationError)
-		_ = ctx.Error(appError)
+	// validation create todo body
+	todoBody, message := createValidation(ctx)
+	if message != "" || todoBody == nil {
+		ctx.JSON(http.StatusBadRequest, controllers.ErrorResponse{
+			Status:  "Bad Request",
+			Message: (message + " cannot be null"),
+		})
 		return
 	}
-	newTodo := useCaseTodo.NewTodo{
-		Title:           request.Title,
-		ActivityGroupID: request.ActivityGroupID,
-		IsActive:        request.IsActive,
-	}
 
-	domainTodo, err := c.TodoService.Create(&newTodo)
+	todos, err := c.TodoService.Create(todoBody)
 	if err != nil {
-		_ = ctx.Error(err)
+		ctx.JSON(http.StatusBadRequest, controllers.ErrorResponse{
+			Status:  "Error",
+			Message: err.Error(),
+		})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, domainTodo)
+	// if todos.ID == 0 {
+	// 	ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
+	// 		Status:  "Not Found",
+	// 		Message: ("Activity Group with ID " + strconv.Itoa(int(*todoBody.ActivityGroupID)) + " Not Found"),
+	// 	})
+	// 	return
+	// }
+
+	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+		Status:  "Success",
+		Message: "Success",
+		Data:    todos,
+	})
 }
 
 // GetAllTodos is the controller to getall todo

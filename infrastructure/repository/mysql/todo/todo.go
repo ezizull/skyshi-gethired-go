@@ -1,9 +1,6 @@
 package todo
 
 import (
-	"encoding/json"
-	"log"
-	domainErrors "skyshi_gethired/domain/errors"
 	domainTodo "skyshi_gethired/domain/todo"
 
 	"gorm.io/gorm"
@@ -35,99 +32,31 @@ func (r *Repository) GetByActivity(activityID string) (todos []domainTodo.Todo, 
 }
 
 // Create ... Insert New data
-func (r *Repository) Create(newTodo *domainTodo.Todo) (createdTodo *domainTodo.Todo, err error) {
-	todo := fromDomainMapper(newTodo)
-
-	tx := r.DB.Create(todo)
-
-	if tx.Error != nil {
-		byteErr, _ := json.Marshal(tx.Error)
-		var newError domainErrors.GormErr
-		err = json.Unmarshal(byteErr, &newError)
-		if err != nil {
-			return
-		}
-		switch newError.Number {
-		case 1062:
-			err = domainErrors.NewAppErrorWithType(domainErrors.ResourceAlreadyExists)
-		default:
-			err = domainErrors.NewAppErrorWithType(domainErrors.UnknownError)
-		}
-		return
+func (r *Repository) Create(newTodo *domainTodo.Todo) (*domainTodo.Todo, error) {
+	resp := r.DB.Create(newTodo)
+	if resp.Error != nil {
+		return nil, resp.Error
 	}
 
-	createdTodo = todo.toDomainMapper()
-	return
+	return newTodo, nil
 }
 
 // GetByID ... Fetch only one todo by Id
-func (r *Repository) GetByID(id int) (todo domainTodo.Todo, err error) {
+func (r *Repository) GetByID(id int) (todo *domainTodo.Todo, err error) {
 	err = r.DB.Where("id = ?", id).First(&todo).Error
 	if err != nil {
-		return todo, err
+		return nil, err
 	}
 
 	return todo, nil
 }
 
-// GetOneByMap ... Fetch only one todo by Map
-func (r *Repository) GetOneByMap(todoMap map[string]interface{}) (*domainTodo.Todo, error) {
-	var todo Todo
-
-	err := r.DB.Where(todoMap).Limit(1).Find(&todo).Error
-	if err != nil {
-		err = domainErrors.NewAppErrorWithType(domainErrors.UnknownError)
-		return nil, err
-	}
-	return todo.toDomainMapper(), err
-}
-
 // Update ... Update todo
 func (r *Repository) Update(id uint, todoMap map[string]interface{}) (*domainTodo.Todo, error) {
-	var todo Todo
-
-	todo.ID = id
-	err := r.DB.Model(&todo).
-		Select("title", "author", "description").
-		Updates(todoMap).Error
-
-	// err = config.DB.Save(todo).Error
-	if err != nil {
-		byteErr, _ := json.Marshal(err)
-		var newError domainErrors.GormErr
-		err = json.Unmarshal(byteErr, &newError)
-		if err != nil {
-			return &domainTodo.Todo{}, err
-		}
-		switch newError.Number {
-		case 1062:
-			err = domainErrors.NewAppErrorWithType(domainErrors.ResourceAlreadyExists)
-			return &domainTodo.Todo{}, err
-
-		default:
-			err = domainErrors.NewAppErrorWithType(domainErrors.UnknownError)
-			return &domainTodo.Todo{}, err
-		}
-	}
-
-	err = r.DB.Where("id = ?", id).First(&todo).Error
-
-	return todo.toDomainMapper(), err
+	return nil, nil
 }
 
 // Delete ... Delete todo
 func (r *Repository) Delete(id int) (err error) {
-	tx := r.DB.Delete(&domainTodo.Todo{}, id)
-
-	log.Println("check ", tx)
-	if tx.Error != nil {
-		err = domainErrors.NewAppErrorWithType(domainErrors.UnknownError)
-		return
-	}
-
-	if tx.RowsAffected == 0 {
-		err = domainErrors.NewAppErrorWithType(domainErrors.NotFound)
-	}
-
 	return
 }

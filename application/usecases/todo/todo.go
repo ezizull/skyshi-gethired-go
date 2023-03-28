@@ -1,7 +1,6 @@
 package todo
 
 import (
-	domainTodo "skyshi_gethired/domain/todo"
 	todoDomain "skyshi_gethired/domain/todo"
 	todoRepository "skyshi_gethired/infrastructure/repository/mysql/todo"
 )
@@ -12,7 +11,7 @@ type Service struct {
 }
 
 // GetAll is a function that returns all todos
-func (s *Service) GetAll() (todos []domainTodo.Todo, err error) {
+func (s *Service) GetAll() (todos []todoDomain.Todo, err error) {
 	todos, err = s.TodoRepository.GetAll()
 	if err != nil {
 		return nil, err
@@ -22,7 +21,7 @@ func (s *Service) GetAll() (todos []domainTodo.Todo, err error) {
 }
 
 // GetByActivity is a function that returns all todos
-func (s *Service) GetByActivity(activityID string) (todos []domainTodo.Todo, err error) {
+func (s *Service) GetByActivity(activityID string) (todos []todoDomain.Todo, err error) {
 	todos, err = s.TodoRepository.GetByActivity(activityID)
 	if err != nil {
 		return nil, err
@@ -32,21 +31,14 @@ func (s *Service) GetByActivity(activityID string) (todos []domainTodo.Todo, err
 }
 
 // GetByID is a function that returns a todo by id
-func (s *Service) GetByID(id int) (todoDomain.Todo, error) {
+func (s *Service) GetByID(id int) (*todoDomain.Todo, error) {
 	return s.TodoRepository.GetByID(id)
 }
 
 // Create is a function that creates a todo
 func (s *Service) Create(todo *NewTodo) (*todoDomain.Todo, error) {
-
-	todoModel := todo.toDomainMapper()
-
+	todoModel := todo.toDomainMapper("very-high")
 	return s.TodoRepository.Create(todoModel)
-}
-
-// GetByMap is a function that returns a todo by map
-func (s *Service) GetByMap(medicineMap map[string]interface{}) (*todoDomain.Todo, error) {
-	return s.TodoRepository.GetOneByMap(medicineMap)
 }
 
 // Delete is a function that deletes a todo by id

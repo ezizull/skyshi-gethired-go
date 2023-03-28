@@ -18,10 +18,10 @@ func NewGorm() (gormDB *gorm.DB, err error) {
 		return nil, err
 	}
 
-	// gormDB, err = migrateMysql(gormDB)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	gormDB, err = migrateMysql(gormDB)
+	if err != nil {
+		return nil, err
+	}
 
 	var result int
 	// Test the connection by executing a simple query

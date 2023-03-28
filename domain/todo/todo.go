@@ -8,7 +8,7 @@ import (
 
 type Todo struct {
 	ID              uint      `json:"id" gorm:"primary_key"`
-	ActivityGroupID uint      `json:"activity_group_id" example:"1" gorm:"foreignKey:ID"`
+	ActivityGroupID uint      `json:"activity_group_id" example:"1"`
 	Title           string    `json:"title" example:"title todo"`
 	IsActive        bool      `json:"is_active" example:"false" gorm:"default:true"`
 	Priority        string    `json:"priority" example:"very-high"`
