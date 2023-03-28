@@ -1,0 +1,28 @@
+{
+  "Environment": "production",
+  "ServerPort": 3030,
+  "Databases": {
+    "MySQL": {
+      "Localhost": {
+        "Read": {
+          "Hostname": "localhost",
+          "Name": "skyshi_gethired",
+          "Username": "root",
+          "Password": "root",
+          "Port": "3306",
+          "Parameter": "?parseTime=true",
+          "Timezone": "Asia/Jakarta"
+        },
+        "Write": {
+          "Hostname": "localhost",
+          "Name": "skyshi_gethired",
+          "Username": "root",
+          "Password": "root",
+          "Port": "3306",
+          "Parameter": "?parseTime=true",
+          "Timezone": "Asia/Jakarta"
+        }
+      }
+    }
+  }
+}
