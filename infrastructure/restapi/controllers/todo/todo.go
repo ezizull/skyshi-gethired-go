@@ -79,21 +79,30 @@ func (c *Controller) GetAllTodos(ctx *gin.Context) {
 
 // GetTodoByID is the controller to get a todo by id
 func (c *Controller) GetTodoByID(ctx *gin.Context) {
-	todoID, err := strconv.Atoi(ctx.Param("id"))
+	todoIDStr := ctx.Param("id")
+	todoID, err := strconv.ParseInt(todoIDStr, 10, 64)
 	if err != nil {
-		appError := domainError.NewAppError(errors.New("todo id is invalid"), domainError.ValidationError)
-		_ = ctx.Error(appError)
+		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
+			Status:  "Not Found",
+			Message: ("Todo with ID " + todoIDStr + " Not Found"),
+		})
 		return
 	}
 
-	domainTodo, err := c.TodoService.GetByID(todoID)
+	todos, err := c.TodoService.GetByID(int(todoID))
 	if err != nil {
-		appError := domainError.NewAppError(err, domainError.ValidationError)
-		_ = ctx.Error(appError)
+		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
+			Status:  "Not Found",
+			Message: ("Todo with ID " + todoIDStr + " Not Found"),
+		})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, domainTodo)
+	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+		Status:  "Success",
+		Message: "Success",
+		Data:    todos,
+	})
 }
 
 // UpdateTodo is the controller to update a todo

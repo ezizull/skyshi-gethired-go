@@ -32,7 +32,7 @@ func (s *Service) GetByActivity(activityID string) (todos []domainTodo.Todo, err
 }
 
 // GetByID is a function that returns a todo by id
-func (s *Service) GetByID(id int) (*todoDomain.Todo, error) {
+func (s *Service) GetByID(id int) (todoDomain.Todo, error) {
 	return s.TodoRepository.GetByID(id)
 }
 

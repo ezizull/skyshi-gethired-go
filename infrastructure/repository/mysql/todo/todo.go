@@ -61,21 +61,13 @@ func (r *Repository) Create(newTodo *domainTodo.Todo) (createdTodo *domainTodo.T
 }
 
 // GetByID ... Fetch only one todo by Id
-func (r *Repository) GetByID(id int) (*domainTodo.Todo, error) {
-	var todo Todo
-	err := r.DB.Where("id = ?", id).First(&todo).Error
-
+func (r *Repository) GetByID(id int) (todo domainTodo.Todo, err error) {
+	err = r.DB.Where("id = ?", id).First(&todo).Error
 	if err != nil {
-		switch err.Error() {
-		case gorm.ErrRecordNotFound.Error():
-			err = domainErrors.NewAppErrorWithType(domainErrors.NotFound)
-		default:
-			err = domainErrors.NewAppErrorWithType(domainErrors.UnknownError)
-		}
-		return &domainTodo.Todo{}, err
+		return todo, err
 	}
 
-	return todo.toDomainMapper(), nil
+	return todo, nil
 }
 
 // GetOneByMap ... Fetch only one todo by Map
