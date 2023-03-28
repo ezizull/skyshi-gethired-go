@@ -61,29 +61,44 @@ func (c *Controller) NewTodo(ctx *gin.Context) {
 // @Failure 500 {object} MessageResponse
 // @Router /todo [get]
 func (c *Controller) GetAllTodos(ctx *gin.Context) {
-	pageStr := ctx.DefaultQuery("page", "1")
-	limitStr := ctx.DefaultQuery("limit", "20")
+	var (
+		todos []domainTodo.Todo
+		err   error
+	)
 
-	page, err := strconv.ParseInt(pageStr, 10, 64)
-	if err != nil {
-		appError := domainError.NewAppError(errors.New("param page is necessary to be an integer"), domainError.ValidationError)
-		_ = ctx.Error(appError)
-		return
-	}
-	limit, err := strconv.ParseInt(limitStr, 10, 64)
-	if err != nil {
-		appError := domainError.NewAppError(errors.New("param limit is necessary to be an integer"), domainError.ValidationError)
-		_ = ctx.Error(appError)
+	activityGroupIDStr := ctx.DefaultQuery("activity_group_id", "0")
+	if activityGroupIDStr != "0" {
+		todos, err = c.TodoService.GetByActivity(activityGroupIDStr)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, controllers.ErrorResponse{
+				Status:  "Error",
+				Message: err.Error(),
+			})
+			return
+		}
+
+		ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+			Status:  "Success",
+			Message: "Success",
+			Data:    todos,
+		})
 		return
 	}
 
-	todos, err := c.TodoService.GetAll(page, limit)
+	todos, err = c.TodoService.GetAll()
 	if err != nil {
-		appError := domainError.NewAppErrorWithType(domainError.UnknownError)
-		_ = ctx.Error(appError)
+		ctx.JSON(http.StatusBadRequest, controllers.ErrorResponse{
+			Status:  "Error",
+			Message: err.Error(),
+		})
 		return
 	}
-	ctx.JSON(http.StatusOK, todos)
+
+	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+		Status:  "Success",
+		Message: "Success",
+		Data:    todos,
+	})
 }
 
 // GetTodoByID godoc

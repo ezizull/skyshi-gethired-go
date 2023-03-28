@@ -11,10 +11,19 @@ type Service struct {
 	TodoRepository todoRepository.Repository
 }
 
-// GetAll is a function that returns all medicines
-func (s *Service) GetAll(page int64, limit int64) (todos *[]domainTodo.Todo, err error) {
+// GetAll is a function that returns all todos
+func (s *Service) GetAll() (todos []domainTodo.Todo, err error) {
+	todos, err = s.TodoRepository.GetAll()
+	if err != nil {
+		return nil, err
+	}
 
-	todos, err = s.TodoRepository.GetAll(page, limit)
+	return todos, nil
+}
+
+// GetByActivity is a function that returns all todos
+func (s *Service) GetByActivity(activityID string) (todos []domainTodo.Todo, err error) {
+	todos, err = s.TodoRepository.GetByActivity(activityID)
 	if err != nil {
 		return nil, err
 	}

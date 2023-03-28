@@ -15,8 +15,18 @@ type Repository struct {
 }
 
 // GetAll Fetch all todo data
-func (r *Repository) GetAll(page int64, limit int64) (todos *[]domainTodo.Todo, err error) {
-	resp := r.DB.Find(todos)
+func (r *Repository) GetAll() (todos []domainTodo.Todo, err error) {
+	resp := r.DB.Find(&todos)
+	if resp.Error != nil {
+		return nil, resp.Error
+	}
+
+	return todos, nil
+}
+
+// GetByActivity Fetch all todo data
+func (r *Repository) GetByActivity(activityID string) (todos []domainTodo.Todo, err error) {
+	resp := r.DB.Where("activity_group_id = ?", activityID).Find(&todos)
 	if resp.Error != nil {
 		return nil, resp.Error
 	}
