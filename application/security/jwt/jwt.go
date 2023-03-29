@@ -44,7 +44,7 @@ var TokenTypeExpTime = map[string]string{
 }
 
 // GenerateJWTToken generates a JWT token (refresh or access)
-func GenerateJWTToken(userID int, tokenType string) (appToken *AppToken, err error) {
+func GenerateJWTToken(userid uint, tokenType string) (appToken *AppToken, err error) {
 	viper.SetConfigFile("config.json")
 	if err := viper.ReadInConfig(); err != nil {
 		_ = fmt.Errorf("fatal error in config file: %s", err.Error())
@@ -75,7 +75,7 @@ func GenerateJWTToken(userID int, tokenType string) (appToken *AppToken, err err
 	expirationTokenTime := nowTime.Add(tokenTimeUnix)
 
 	tokenClaims := &Claims{
-		ID:   userID,
+		ID:   1, // userID,
 		Type: tokenType,
 		RegisteredClaims: jwt.RegisteredClaims{
 			// In JWT, the expiry time is expressed as unix milliseconds

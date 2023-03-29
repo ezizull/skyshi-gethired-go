@@ -32,18 +32,18 @@ func (s *Service) GetByActivity(activityID string) (todos []todoDomain.Todo, err
 }
 
 // GetByID is a function that returns a todo by id
-func (s *Service) GetByID(id int) (*todoDomain.Todo, error) {
+func (s *Service) GetByID(id uint) (*todoDomain.Todo, error) {
 	return s.TodoRepository.GetByID(id)
 }
 
 // GetActivity is a function that returns a todo by id
-func (s *Service) GetActivity(id int) (*activityDomain.Activity, error) {
+func (s *Service) GetActivity(id uint) (*activityDomain.Activity, error) {
 	return s.TodoRepository.GetActivity(id)
 }
 
 // Create is a function that creates a todo
 func (s *Service) Create(todo *NewTodo) (*todoDomain.Todo, error) {
-	_, err := s.TodoRepository.GetActivity(int(*todo.ActivityGroupID))
+	_, err := s.TodoRepository.GetActivity(*todo.ActivityGroupID)
 	if err != nil {
 		return nil, err
 	}
@@ -55,10 +55,15 @@ func (s *Service) Create(todo *NewTodo) (*todoDomain.Todo, error) {
 // Update is a function that updates a todo by id
 func (s *Service) Update(id uint, todo *UpdateTodo) (*todoDomain.Todo, error) {
 	todoModel := todo.toDomainMapper()
-	return s.TodoRepository.Update(id, todoModel)
+	_, err := s.TodoRepository.Update(id, todoModel)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.TodoRepository.GetByID(id)
 }
 
 // Delete is a function that deletes a todo by id
-func (s *Service) Delete(id int) error {
+func (s *Service) Delete(id uint) error {
 	return s.TodoRepository.Delete(id)
 }

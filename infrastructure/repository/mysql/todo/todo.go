@@ -43,7 +43,7 @@ func (r *Repository) Create(newTodo *todoDomain.Todo) (*todoDomain.Todo, error) 
 }
 
 // GetByID ... Fetch only one todo by Id
-func (r *Repository) GetByID(id int) (todo *todoDomain.Todo, err error) {
+func (r *Repository) GetByID(id uint) (todo *todoDomain.Todo, err error) {
 	err = r.DB.Where("id = ?", id).First(&todo).Error
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (r *Repository) GetByID(id int) (todo *todoDomain.Todo, err error) {
 }
 
 // GetActivity ... Fetch only one activity by Id
-func (r *Repository) GetActivity(id int) (activity *activityDomain.Activity, err error) {
+func (r *Repository) GetActivity(id uint) (activity *activityDomain.Activity, err error) {
 	err = r.DB.Where("id = ?", id).First(&activity).Error
 	if err != nil {
 		return nil, err
@@ -64,8 +64,8 @@ func (r *Repository) GetActivity(id int) (activity *activityDomain.Activity, err
 
 // Update ... Update todo
 func (r *Repository) Update(id uint, todo *todoDomain.Todo) (updatedTodo *todoDomain.Todo, err error) {
-	resp := r.DB.Model(updatedTodo).Updates(todo)
-	if resp != nil {
+	err = r.DB.Model(updatedTodo).Where("id = ?", id).Updates(todo).Error
+	if err != nil {
 		return nil, err
 	}
 
@@ -73,6 +73,6 @@ func (r *Repository) Update(id uint, todo *todoDomain.Todo) (updatedTodo *todoDo
 }
 
 // Delete ... Delete todo
-func (r *Repository) Delete(id int) (err error) {
+func (r *Repository) Delete(id uint) (err error) {
 	return
 }

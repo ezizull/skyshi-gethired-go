@@ -20,7 +20,7 @@ func (s *Service) GetAll() (todos []activityDomain.Activity, err error) {
 }
 
 // GetByID is a function that returns a activity by id
-func (s *Service) GetByID(id int) (*activityDomain.Activity, error) {
+func (s *Service) GetByID(id uint) (*activityDomain.Activity, error) {
 	return s.ActivityRepository.GetByID(id)
 }
 
@@ -31,7 +31,7 @@ func (s *Service) Create(activity *NewActivity) (*activityDomain.Activity, error
 }
 
 // Delete is a function that deletes a activity by id
-func (s *Service) Delete(id int) error {
+func (s *Service) Delete(id uint) error {
 	return s.ActivityRepository.Delete(id)
 }
 

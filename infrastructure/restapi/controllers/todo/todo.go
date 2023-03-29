@@ -1,10 +1,8 @@
 package todo
 
 import (
-	"errors"
 	"net/http"
 	todoUseCase "skyshi_gethired/application/usecases/todo"
-	errorDomain "skyshi_gethired/domain/errors"
 	"skyshi_gethired/infrastructure/restapi/controllers"
 	"strconv"
 
@@ -55,7 +53,7 @@ func (c *Controller) GetAllTodos(ctx *gin.Context) {
 // GetTodoByID is the controller to get a todo by id
 func (c *Controller) GetTodoByID(ctx *gin.Context) {
 	todoIDStr := ctx.Param("id")
-	todoID, err := strconv.ParseInt(todoIDStr, 10, 64)
+	todoID, err := strconv.ParseUint(todoIDStr, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
 			Status:  "Not Found",
@@ -64,7 +62,7 @@ func (c *Controller) GetTodoByID(ctx *gin.Context) {
 		return
 	}
 
-	todos, err := c.TodoService.GetByID(int(todoID))
+	todos, err := c.TodoService.GetByID(uint(todoID))
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
 			Status:  "Not Found",
@@ -132,7 +130,7 @@ func (c *Controller) UpdateTodo(ctx *gin.Context) {
 
 	// Get single todo for
 	todos, err := c.TodoService.Update(uint(todoID), todoBody)
-	if err != nil {
+	if err != nil || todos == nil {
 		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
 			Status:  "Not Found",
 			Message: ("Todo with ID " + strconv.Itoa(int(todoID)) + " Not Found"),
@@ -149,17 +147,5 @@ func (c *Controller) UpdateTodo(ctx *gin.Context) {
 
 // DeleteTodo is the controller to delete a todo
 func (c *Controller) DeleteTodo(ctx *gin.Context) {
-	todoID, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		appError := errorDomain.NewAppError(errors.New("param id is necessary in the url"), errorDomain.ValidationError)
-		_ = ctx.Error(appError)
-		return
-	}
 
-	err = c.TodoService.Delete(todoID)
-	if err != nil {
-		_ = ctx.Error(err)
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{"message": "resource deleted successfully"})
 }

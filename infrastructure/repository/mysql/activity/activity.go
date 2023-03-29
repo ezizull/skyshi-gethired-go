@@ -33,7 +33,7 @@ func (r *Repository) Create(newTodo *activityDomain.Activity) (*activityDomain.A
 }
 
 // GetByID ... Fetch only one activity by Id
-func (r *Repository) GetByID(id int) (activity *activityDomain.Activity, err error) {
+func (r *Repository) GetByID(id uint) (activity *activityDomain.Activity, err error) {
 	err = r.DB.Where("id = ?", id).First(&activity).Error
 	fmt.Println("check ", activity)
 	if err != nil {
@@ -49,6 +49,6 @@ func (r *Repository) Update(id uint, todoMap map[string]interface{}) (*activityD
 }
 
 // Delete ... Delete activity
-func (r *Repository) Delete(id int) (err error) {
+func (r *Repository) Delete(id uint) (err error) {
 	return
 }
