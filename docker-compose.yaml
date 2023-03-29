@@ -1,10 +1,11 @@
-version: "3.7"
+version: "3.8"
 services:
   restapi:
     container_name: skyshi_gethired
     build:
       context: .
       dockerfile: ./docker/restapi.dockerfile
+    restart: on-failure
     ports:
       - "3030:3030"
     volumes:
@@ -12,28 +13,24 @@ services:
     depends_on:
       - mysql
     environment:
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USER="root"
-      - DB_PASSWORD="root"
-      - DB_DATABASE="skyshi_gethired"
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DBNAME=skyshi_gethired
 
   mysql:
     container_name: skyshi_gethired_mysql
-    build:
-      context: .
-      dockerfile: ./docker/mysql.dockerfile
+    image: mysql:latest
     restart: always
     ports:
-      - "3306:3306"
+      - "3036:3036"
     environment:
-      - MYSQL_ROOT_PASSWORD="root"
-      - MYSQL_DATABASE=skyshi_gethired
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=root
     volumes:
-      - mysql_data:/var/lib/mysql
-      - mysql:/docker-entrypoint-initdb.d
+      - skyshi_mysql:/var/lib/mysql
 
 volumes:
-  mysql:
-  mysql_data:
   skyshi_gethired:
+  skyshi_mysql:

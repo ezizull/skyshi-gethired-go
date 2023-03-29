@@ -1,13 +1,9 @@
-FROM golang:1.20-alpine
+FROM golang:1.20-alpine as build
 WORKDIR /usr/src/app
 
-ENV GOPATH=/app
-
-COPY go.mod go.sum ./
-RUN go mod download && go mod verify
-
-# Copy and build the app
+RUN ls -la
 COPY . .
 
-RUN go build -o main .
-CMD [ "./main" ]
+RUN go build -o main
+
+CMD ["./main"]
