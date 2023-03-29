@@ -1,19 +1,33 @@
 version: "3"
 services:
   web:
-    build: ./docker
+    container_name: skyshi_gethired
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    restart: on-failure
     ports:
       - "8090:3030"
+    volumes:
+      - skyshi_gethired:/usr/src/app
     depends_on:
-      - db
+      - mysql
     environment:
-      - MYSQL_HOST=db
+      - MYSQL_HOST=localhost
       - MYSQL_PORT=3306
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
       - MYSQL_DBNAME=skyshi_gethired
-  db:
+
+  mysql:
+    container_name: skyshi_gethired_mysql
     image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=root
+    volumes:
+      - skyshi_mysql:/var/lib/mysql
+
+volumes:
+  skyshi_gethired:
+  skyshi_mysql:
