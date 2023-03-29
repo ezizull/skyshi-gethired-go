@@ -1,0 +1,19 @@
+version: "3"
+services:
+  web:
+    build: ./docker
+    ports:
+      - "8090:3030"
+    depends_on:
+      - db
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DBNAME=skyshi_gethired
+  db:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=root

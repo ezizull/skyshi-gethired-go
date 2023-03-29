@@ -43,6 +43,15 @@ type infoDatabaseMySQL struct {
 	}
 }
 
+// Database cradential
+var (
+	hostname = os.Getenv("MYSQL_HOST")
+	port     = os.Getenv("MYSQL_PORT")
+	username = os.Getenv("MYSQL_USERNAME")
+	password = os.Getenv("MYSQL_PASSWORD")
+	dbname   = os.Getenv("MYSQL_POSGRES")
+)
+
 func (infoDB *infoDatabaseMySQL) getMysqlConn(nameMap string) (err error) {
 
 	viper.SetConfigFile("config.json")
@@ -57,9 +66,9 @@ func (infoDB *infoDatabaseMySQL) getMysqlConn(nameMap string) (err error) {
 	}
 
 	infoDB.Read.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		infoDB.Read.Username, infoDB.Read.Password, infoDB.Read.Hostname, infoDB.Read.Port, infoDB.Read.Name)
+		username, password, hostname, port, dbname)
 	infoDB.Write.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		infoDB.Write.Username, infoDB.Write.Password, infoDB.Write.Hostname, infoDB.Write.Port, infoDB.Write.Name)
+		username, password, hostname, port, dbname)
 	return
 }
 
