@@ -9,7 +9,7 @@ type Service struct {
 	ActivityRepository activityRepository.Repository
 }
 
-// GetAll is a function that returns all activitys
+// GetAll is a function that returns all todos
 func (s *Service) GetAll() (todos []activityDomain.Activity, err error) {
 	todos, err = s.ActivityRepository.GetAll()
 	if err != nil {
@@ -24,18 +24,34 @@ func (s *Service) GetByID(id uint) (*activityDomain.Activity, error) {
 	return s.ActivityRepository.GetByID(id)
 }
 
+// GetActivity is a function that returns a activity by id
+func (s *Service) GetActivity(id uint) (*activityDomain.Activity, error) {
+	return s.ActivityRepository.GetActivity(id)
+}
+
 // Create is a function that creates a activity
 func (s *Service) Create(activity *NewActivity) (*activityDomain.Activity, error) {
-	todoModel := activity.toDomainMapper("very-high")
+	todoModel := activity.toDomainMapper()
 	return s.ActivityRepository.Create(todoModel)
+}
+
+// Update is a function that updates a activity by id
+func (s *Service) Update(id uint, activity *UpdateActivity) (*activityDomain.Activity, error) {
+	todoModel := activity.toDomainMapper()
+	_, err := s.ActivityRepository.Update(id, todoModel)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.ActivityRepository.GetByID(id)
 }
 
 // Delete is a function that deletes a activity by id
 func (s *Service) Delete(id uint) error {
-	return s.ActivityRepository.Delete(id)
-}
+	_, err := s.ActivityRepository.GetByID(id)
+	if err != nil {
+		return err
+	}
 
-// Update is a function that updates a activity by id
-func (s *Service) Update(id uint, medicineMap map[string]interface{}) (*activityDomain.Activity, error) {
-	return s.ActivityRepository.Update(id, medicineMap)
+	return s.ActivityRepository.Delete(id)
 }

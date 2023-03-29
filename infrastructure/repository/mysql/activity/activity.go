@@ -1,7 +1,6 @@
 package activity
 
 import (
-	"fmt"
 	activityDomain "skyshi_gethired/domain/activity"
 
 	"gorm.io/gorm"
@@ -13,13 +12,23 @@ type Repository struct {
 }
 
 // GetAll Fetch all activity data
-func (r *Repository) GetAll() (activity []activityDomain.Activity, err error) {
-	resp := r.DB.Find(&activity)
+func (r *Repository) GetAll() (activities []activityDomain.Activity, err error) {
+	resp := r.DB.Find(&activities)
 	if resp.Error != nil {
 		return nil, resp.Error
 	}
 
-	return activity, nil
+	return activities, nil
+}
+
+// GetByActivity Fetch all activity data
+func (r *Repository) GetByActivity(activityID string) (activities []activityDomain.Activity, err error) {
+	resp := r.DB.Where("activity_group_id = ?", activityID).Find(&activities)
+	if resp.Error != nil {
+		return nil, resp.Error
+	}
+
+	return activities, nil
 }
 
 // Create ... Insert New data
@@ -35,7 +44,16 @@ func (r *Repository) Create(newTodo *activityDomain.Activity) (*activityDomain.A
 // GetByID ... Fetch only one activity by Id
 func (r *Repository) GetByID(id uint) (activity *activityDomain.Activity, err error) {
 	err = r.DB.Where("id = ?", id).First(&activity).Error
-	fmt.Println("check ", activity)
+	if err != nil {
+		return nil, err
+	}
+
+	return activity, nil
+}
+
+// GetActivity ... Fetch only one activity by Id
+func (r *Repository) GetActivity(id uint) (activity *activityDomain.Activity, err error) {
+	err = r.DB.Where("id = ?", id).First(&activity).Error
 	if err != nil {
 		return nil, err
 	}
@@ -44,11 +62,20 @@ func (r *Repository) GetByID(id uint) (activity *activityDomain.Activity, err er
 }
 
 // Update ... Update activity
-func (r *Repository) Update(id uint, todoMap map[string]interface{}) (*activityDomain.Activity, error) {
-	return nil, nil
+func (r *Repository) Update(id uint, activity *activityDomain.Activity) (updatedTodo *activityDomain.Activity, err error) {
+	err = r.DB.Model(updatedTodo).Where("id = ?", id).Updates(activity).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedTodo, nil
 }
 
 // Delete ... Delete activity
 func (r *Repository) Delete(id uint) (err error) {
-	return
+	err = r.DB.Delete(&activityDomain.Activity{}, id).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
