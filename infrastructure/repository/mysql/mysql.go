@@ -45,11 +45,11 @@ type infoDatabaseMySQL struct {
 
 // Database cradential
 var (
-	hostname = os.Getenv("MYSQL_HOST")
-	port     = os.Getenv("MYSQL_PORT")
-	username = os.Getenv("MYSQL_USER")
-	password = os.Getenv("MYSQL_PASSWORD")
-	dbname   = os.Getenv("MYSQL_DBNAME")
+	hostname = os.Getenv("DB_HOST")
+	port     = os.Getenv("DB_PORT")
+	username = os.Getenv("DB_USER")
+	password = os.Getenv("DB_PASSWORD")
+	dbname   = os.Getenv("DB_DATABASE")
 )
 
 func (infoDB *infoDatabaseMySQL) getMysqlConn(nameMap string) (err error) {
@@ -64,15 +64,15 @@ func (infoDB *infoDatabaseMySQL) getMysqlConn(nameMap string) (err error) {
 		return
 	}
 
-	infoDB.Read.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		infoDB.Read.Username, infoDB.Read.Password, infoDB.Read.Hostname, infoDB.Read.Port, infoDB.Read.Name)
-	infoDB.Write.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		infoDB.Write.Username, infoDB.Write.Password, infoDB.Write.Hostname, infoDB.Write.Port, infoDB.Write.Name)
-
 	// infoDB.Read.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-	// 	username, password, hostname, port, dbname)
+	// 	infoDB.Read.Username, infoDB.Read.Password, infoDB.Read.Hostname, infoDB.Read.Port, infoDB.Read.Name)
 	// infoDB.Write.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-	// 	username, password, hostname, port, dbname)
+	// 	infoDB.Write.Username, infoDB.Write.Password, infoDB.Write.Hostname, infoDB.Write.Port, infoDB.Write.Name)
+
+	infoDB.Read.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+		username, password, hostname, port, dbname)
+	infoDB.Write.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+		username, password, hostname, port, dbname)
 
 	return
 }
