@@ -65,5 +65,10 @@ func (s *Service) Update(id uint, todo *UpdateTodo) (*todoDomain.Todo, error) {
 
 // Delete is a function that deletes a todo by id
 func (s *Service) Delete(id uint) error {
+	_, err := s.TodoRepository.GetByID(id)
+	if err != nil {
+		return err
+	}
+
 	return s.TodoRepository.Delete(id)
 }

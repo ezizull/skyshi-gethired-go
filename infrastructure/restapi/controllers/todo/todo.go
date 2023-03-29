@@ -147,5 +147,28 @@ func (c *Controller) UpdateTodo(ctx *gin.Context) {
 
 // DeleteTodo is the controller to delete a todo
 func (c *Controller) DeleteTodo(ctx *gin.Context) {
+	todoIDStr := ctx.Param("id")
+	todoID, err := strconv.ParseUint(todoIDStr, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
+			Status:  "Not Found",
+			Message: ("Todo with ID " + todoIDStr + " Not Found"),
+		})
+		return
+	}
 
+	err = c.TodoService.Delete(uint(todoID))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, controllers.ErrorResponse{
+			Status:  "Not Found",
+			Message: ("Todo with ID " + strconv.Itoa(int(todoID)) + " Not Found"),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+		Status:  "Success",
+		Message: "Success",
+		Data:    gin.H{},
+	})
 }

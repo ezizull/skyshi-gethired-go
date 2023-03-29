@@ -74,5 +74,9 @@ func (r *Repository) Update(id uint, todo *todoDomain.Todo) (updatedTodo *todoDo
 
 // Delete ... Delete todo
 func (r *Repository) Delete(id uint) (err error) {
-	return
+	err = r.DB.Delete(&todoDomain.Todo{}, id).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
