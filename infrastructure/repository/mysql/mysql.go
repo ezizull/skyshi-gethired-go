@@ -47,9 +47,9 @@ type infoDatabaseMySQL struct {
 var (
 	hostname = os.Getenv("MYSQL_HOST")
 	port     = os.Getenv("MYSQL_PORT")
-	username = os.Getenv("MYSQL_USERNAME")
+	username = os.Getenv("MYSQL_USER")
 	password = os.Getenv("MYSQL_PASSWORD")
-	dbname   = os.Getenv("MYSQL_POSGRES")
+	dbname   = os.Getenv("MYSQL_DBNAME")
 )
 
 func (infoDB *infoDatabaseMySQL) getMysqlConn(nameMap string) (err error) {
@@ -64,6 +64,8 @@ func (infoDB *infoDatabaseMySQL) getMysqlConn(nameMap string) (err error) {
 	if err != nil {
 		return
 	}
+
+	fmt.Println("check ", username, password, hostname, port, dbname)
 
 	infoDB.Read.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		username, password, hostname, port, dbname)
