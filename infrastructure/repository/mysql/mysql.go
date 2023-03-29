@@ -53,7 +53,6 @@ var (
 )
 
 func (infoDB *infoDatabaseMySQL) getMysqlConn(nameMap string) (err error) {
-
 	viper.SetConfigFile("config.json")
 	err = viper.ReadInConfig()
 	if err != nil {
@@ -65,12 +64,16 @@ func (infoDB *infoDatabaseMySQL) getMysqlConn(nameMap string) (err error) {
 		return
 	}
 
-	fmt.Println("check ", username, password, hostname, port, dbname)
-
 	infoDB.Read.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		username, password, hostname, port, dbname)
+		infoDB.Read.Username, infoDB.Read.Password, infoDB.Read.Hostname, infoDB.Read.Port, infoDB.Read.Name)
 	infoDB.Write.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		username, password, hostname, port, dbname)
+		infoDB.Write.Username, infoDB.Write.Password, infoDB.Write.Hostname, infoDB.Write.Port, infoDB.Write.Name)
+
+	// infoDB.Read.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+	// 	username, password, hostname, port, dbname)
+	// infoDB.Write.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+	// 	username, password, hostname, port, dbname)
+
 	return
 }
 
