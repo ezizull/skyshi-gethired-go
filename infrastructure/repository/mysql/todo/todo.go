@@ -1,7 +1,8 @@
 package todo
 
 import (
-	domainTodo "skyshi_gethired/domain/todo"
+	activityDomain "skyshi_gethired/domain/activity"
+	todoDomain "skyshi_gethired/domain/todo"
 
 	"gorm.io/gorm"
 )
@@ -12,7 +13,7 @@ type Repository struct {
 }
 
 // GetAll Fetch all todo data
-func (r *Repository) GetAll() (todos []domainTodo.Todo, err error) {
+func (r *Repository) GetAll() (todos []todoDomain.Todo, err error) {
 	resp := r.DB.Find(&todos)
 	if resp.Error != nil {
 		return nil, resp.Error
@@ -22,7 +23,7 @@ func (r *Repository) GetAll() (todos []domainTodo.Todo, err error) {
 }
 
 // GetByActivity Fetch all todo data
-func (r *Repository) GetByActivity(activityID string) (todos []domainTodo.Todo, err error) {
+func (r *Repository) GetByActivity(activityID string) (todos []todoDomain.Todo, err error) {
 	resp := r.DB.Where("activity_group_id = ?", activityID).Find(&todos)
 	if resp.Error != nil {
 		return nil, resp.Error
@@ -32,7 +33,7 @@ func (r *Repository) GetByActivity(activityID string) (todos []domainTodo.Todo, 
 }
 
 // Create ... Insert New data
-func (r *Repository) Create(newTodo *domainTodo.Todo) (*domainTodo.Todo, error) {
+func (r *Repository) Create(newTodo *todoDomain.Todo) (*todoDomain.Todo, error) {
 	resp := r.DB.Create(newTodo)
 	if resp.Error != nil {
 		return nil, resp.Error
@@ -42,7 +43,7 @@ func (r *Repository) Create(newTodo *domainTodo.Todo) (*domainTodo.Todo, error) 
 }
 
 // GetByID ... Fetch only one todo by Id
-func (r *Repository) GetByID(id int) (todo *domainTodo.Todo, err error) {
+func (r *Repository) GetByID(id int) (todo *todoDomain.Todo, err error) {
 	err = r.DB.Where("id = ?", id).First(&todo).Error
 	if err != nil {
 		return nil, err
@@ -51,9 +52,24 @@ func (r *Repository) GetByID(id int) (todo *domainTodo.Todo, err error) {
 	return todo, nil
 }
 
+// GetActivity ... Fetch only one activity by Id
+func (r *Repository) GetActivity(id int) (activity *activityDomain.Activity, err error) {
+	err = r.DB.Where("id = ?", id).First(&activity).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return activity, nil
+}
+
 // Update ... Update todo
-func (r *Repository) Update(id uint, todoMap map[string]interface{}) (*domainTodo.Todo, error) {
-	return nil, nil
+func (r *Repository) Update(id uint, todo *todoDomain.Todo) (updatedTodo *todoDomain.Todo, err error) {
+	resp := r.DB.Model(updatedTodo).Updates(todo)
+	if resp != nil {
+		return nil, err
+	}
+
+	return updatedTodo, nil
 }
 
 // Delete ... Delete todo

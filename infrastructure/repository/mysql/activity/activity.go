@@ -1,7 +1,8 @@
 package activity
 
 import (
-	domainActivity "skyshi_gethired/domain/activity"
+	"fmt"
+	activityDomain "skyshi_gethired/domain/activity"
 
 	"gorm.io/gorm"
 )
@@ -12,7 +13,7 @@ type Repository struct {
 }
 
 // GetAll Fetch all activity data
-func (r *Repository) GetAll() (activity []domainActivity.Activity, err error) {
+func (r *Repository) GetAll() (activity []activityDomain.Activity, err error) {
 	resp := r.DB.Find(&activity)
 	if resp.Error != nil {
 		return nil, resp.Error
@@ -21,18 +22,8 @@ func (r *Repository) GetAll() (activity []domainActivity.Activity, err error) {
 	return activity, nil
 }
 
-// GetByActivity Fetch all activity data
-func (r *Repository) GetByActivity(activityID string) (activity []domainActivity.Activity, err error) {
-	resp := r.DB.Where("activity_group_id = ?", activityID).Find(&activity)
-	if resp.Error != nil {
-		return nil, resp.Error
-	}
-
-	return activity, nil
-}
-
 // Create ... Insert New data
-func (r *Repository) Create(newTodo *domainActivity.Activity) (*domainActivity.Activity, error) {
+func (r *Repository) Create(newTodo *activityDomain.Activity) (*activityDomain.Activity, error) {
 	resp := r.DB.Create(newTodo)
 	if resp.Error != nil {
 		return nil, resp.Error
@@ -42,8 +33,9 @@ func (r *Repository) Create(newTodo *domainActivity.Activity) (*domainActivity.A
 }
 
 // GetByID ... Fetch only one activity by Id
-func (r *Repository) GetByID(id int) (activity *domainActivity.Activity, err error) {
+func (r *Repository) GetByID(id int) (activity *activityDomain.Activity, err error) {
 	err = r.DB.Where("id = ?", id).First(&activity).Error
+	fmt.Println("check ", activity)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +44,7 @@ func (r *Repository) GetByID(id int) (activity *domainActivity.Activity, err err
 }
 
 // Update ... Update activity
-func (r *Repository) Update(id uint, todoMap map[string]interface{}) (*domainActivity.Activity, error) {
+func (r *Repository) Update(id uint, todoMap map[string]interface{}) (*activityDomain.Activity, error) {
 	return nil, nil
 }
 

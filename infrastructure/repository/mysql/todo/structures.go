@@ -1,7 +1,7 @@
 package todo
 
 import (
-	domainTodo "skyshi_gethired/domain/todo"
+	todoDomain "skyshi_gethired/domain/todo"
 	"time"
 
 	"gorm.io/gorm"
@@ -26,7 +26,7 @@ func (*Todo) TableName() string {
 
 // PaginationResultTodo is a struct that contains the pagination result for todo
 type PaginationResultTodo struct {
-	Data       *[]domainTodo.Todo
+	Data       *[]todoDomain.Todo
 	Total      int64
 	Limit      int64
 	Current    int64

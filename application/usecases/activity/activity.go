@@ -19,16 +19,6 @@ func (s *Service) GetAll() (todos []activityDomain.Activity, err error) {
 	return todos, nil
 }
 
-// GetByActivity is a function that returns all todos
-func (s *Service) GetByActivity(activityID string) (todos []activityDomain.Activity, err error) {
-	todos, err = s.ActivityRepository.GetByActivity(activityID)
-	if err != nil {
-		return nil, err
-	}
-
-	return todos, nil
-}
-
 // GetByID is a function that returns a activity by id
 func (s *Service) GetByID(id int) (*activityDomain.Activity, error) {
 	return s.ActivityRepository.GetByID(id)
