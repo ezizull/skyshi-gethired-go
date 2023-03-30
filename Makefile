@@ -11,4 +11,4 @@ docker-push:
 	sudo docker push ezizull/skyshi-gethired:latest
 
 docker-run:
-	sudo docker run -e MYSQL_HOST=172.17.0.1 -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DBNAME=skyshi_gethired -p 8090:3030 ezizull/skyshi-gethired:1.0
+	sudo docker run -e MYSQL_HOST=172.17.0.1 -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DBNAME=skyshi_gethired -p 8090:3030 ezizull/skyshi-gethired:$(tag)
