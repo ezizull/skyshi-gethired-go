@@ -45,11 +45,11 @@ type infoDatabaseMySQL struct {
 
 // Database cradential
 var (
-	hostname = os.Getenv("DB_HOST")
-	port     = os.Getenv("DB_PORT")
-	username = os.Getenv("DB_USER")
-	password = os.Getenv("DB_PASSWORD")
-	dbname   = os.Getenv("DB_NAME")
+	hostname = os.Getenv("MYSQL_HOST")
+	port     = os.Getenv("MYSQL_PORT")
+	username = os.Getenv("MYSQL_USER")
+	password = os.Getenv("MYSQL_PASSWORD")
+	dbname   = os.Getenv("MYSQL_DBNAME")
 )
 
 func (infoDB *infoDatabaseMySQL) getMysqlConn(nameMap string) (err error) {

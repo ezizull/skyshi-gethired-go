@@ -11,28 +11,9 @@ services:
     volumes:
       - .:/usr/src/app
     environment:
-      - DB_HOST=${MYSQL_HOST}
-      - DB_PORT=${MYSQL_PORT}
-      - DB_USER=${MYSQL_USER}
-      - DB_PASSWORD=${MYSQL_PASSWORD}
-      - DB_NAME=${MYSQL_DBNAME}
-    # depends_on:
-    #   - mysql
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DBNAME=${MYSQL_DBNAME}
     command: go run main.go -b 0.0.0.0
-
-  # mysql:
-  #   container_name: skyshi_gethired_mysql
-  #   image: mysql:latest
-  #   restart: always
-  #   ports:
-  #     - "3306:3306"
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
-  #     - MYSQL_USER=${MYSQL_USER}
-  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-  #     - MYSQL_DATABASE=${MYSQL_DBNAME}
-  #   volumes:
-  #     - mysql_db:/lib/mysql
-
-volumes:
-  mysql_db:
