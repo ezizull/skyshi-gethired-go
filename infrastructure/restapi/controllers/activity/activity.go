@@ -113,14 +113,14 @@ func (c *Controller) DeleteActivity(ctx *gin.Context) {
 	activityID := ctx.Param("id")
 	err := c.ActivityService.Delete(activityID)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, controllers.ErrorResponse{
+		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
 			Status:  "Not Found",
 			Message: ("Activity with ID " + activityID + " Not Found"),
 		})
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+	ctx.JSON(http.StatusOK, controllers.DefaultResponse{
 		Status:  "Success",
 		Message: "Success",
 		Data:    gin.H{},
