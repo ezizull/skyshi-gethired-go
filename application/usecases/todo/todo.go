@@ -4,7 +4,6 @@ import (
 	activityDomain "skyshi_gethired/domain/activity"
 	todoDomain "skyshi_gethired/domain/todo"
 	todoRepository "skyshi_gethired/infrastructure/repository/mysql/todo"
-	"strconv"
 )
 
 // Service is a struct that contains the repository implementation for todo use case
@@ -38,13 +37,13 @@ func (s *Service) GetByID(id string) (*todoDomain.Todo, error) {
 }
 
 // GetActivity is a function that returns a todo by id
-func (s *Service) GetActivity(id string) (*activityDomain.Activity, error) {
+func (s *Service) GetActivity(id uint) (*activityDomain.Activity, error) {
 	return s.TodoRepository.GetActivity(id)
 }
 
 // Create is a function that creates a todo
 func (s *Service) Create(todo *NewTodo) (*todoDomain.Todo, error) {
-	_, err := s.TodoRepository.GetActivity(strconv.Itoa(int(*todo.ActivityGroupID)))
+	_, err := s.TodoRepository.GetActivity(*todo.ActivityGroupID)
 	if err != nil {
 		return nil, err
 	}

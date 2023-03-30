@@ -53,7 +53,7 @@ func (r *Repository) GetByID(id string) (todo *todoDomain.Todo, err error) {
 }
 
 // GetActivity ... Fetch only one activity by Id
-func (r *Repository) GetActivity(id string) (activity *activityDomain.Activity, err error) {
+func (r *Repository) GetActivity(id uint) (activity *activityDomain.Activity, err error) {
 	resp := r.DB.Where("id = ?", id).First(&activity)
 	if resp.Error != nil {
 		return nil, resp.Error
@@ -64,9 +64,9 @@ func (r *Repository) GetActivity(id string) (activity *activityDomain.Activity, 
 
 // Update ... Update todo
 func (r *Repository) Update(id string, todo *todoDomain.Todo) (updatedTodo *todoDomain.Todo, err error) {
-	err = r.DB.Model(updatedTodo).Where("id = ?", id).Updates(todo).Error
-	if err != nil {
-		return nil, err
+	resp := r.DB.Model(updatedTodo).Where("id = ?", id).Updates(todo)
+	if resp.Error != nil {
+		return nil, resp.Error
 	}
 
 	return updatedTodo, nil
@@ -74,9 +74,9 @@ func (r *Repository) Update(id string, todo *todoDomain.Todo) (updatedTodo *todo
 
 // Delete ... Delete todo
 func (r *Repository) Delete(id string) (err error) {
-	err = r.DB.Delete(&todoDomain.Todo{}, id).Error
-	if err != nil {
-		return err
+	resp := r.DB.Delete(&todoDomain.Todo{}, id)
+	if resp.Error != nil {
+		return resp.Error
 	}
 	return nil
 }
