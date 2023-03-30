@@ -55,31 +55,44 @@ var (
 func (infoDB *infoDatabaseMySQL) getMysqlConn(nameMap string) (err error) {
 	fmt.Println("check ", username, password, hostname, port, dbname)
 
-	if username != "" && password != "" && hostname != "" && port != "" && dbname != "" {
-		infoDB.Read.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-			username, password, hostname, port, dbname)
-		infoDB.Write.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-			username, password, hostname, port, dbname)
-
-	} else {
-		viper.SetConfigFile("config.json")
-		err = viper.ReadInConfig()
-		if err != nil {
-			return
-		}
-
-		err = mapstructure.Decode(viper.GetStringMap(nameMap), infoDB)
-		if err != nil {
-			return
-		}
-
-		infoDB.Read.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-			infoDB.Read.Username, infoDB.Read.Password, infoDB.Read.Hostname, infoDB.Read.Port, infoDB.Read.Name)
-		infoDB.Write.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-			infoDB.Write.Username, infoDB.Write.Password, infoDB.Write.Hostname, infoDB.Write.Port, infoDB.Write.Name)
-		fmt.Println("check ", infoDB.Read.DriverConn)
+	viper.SetConfigFile("config.json")
+	err = viper.ReadInConfig()
+	if err != nil {
+		return
 	}
 
+	err = mapstructure.Decode(viper.GetStringMap(nameMap), infoDB)
+	if err != nil {
+		return
+	}
+
+	if hostname != "" {
+		infoDB.Read.Hostname = hostname
+		infoDB.Write.Hostname = hostname
+	}
+
+	if port != "" {
+		infoDB.Read.Port = port
+		infoDB.Write.Port = port
+	}
+	if username != "" {
+		infoDB.Read.Username = username
+		infoDB.Write.Username = username
+	}
+	if password != "" {
+		infoDB.Read.Password = password
+		infoDB.Write.Password = password
+	}
+
+	if dbname != "" {
+		infoDB.Read.Name = dbname
+		infoDB.Write.Name = dbname
+	}
+
+	infoDB.Read.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+		infoDB.Read.Username, infoDB.Read.Password, infoDB.Read.Hostname, infoDB.Read.Port, infoDB.Read.Name)
+	infoDB.Write.DriverConn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+		infoDB.Write.Username, infoDB.Write.Password, infoDB.Write.Hostname, infoDB.Write.Port, infoDB.Write.Name)
 	return
 }
 
