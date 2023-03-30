@@ -53,7 +53,7 @@ func startServer(router http.Handler) {
 		Handler:        router,
 		ReadTimeout:    18000 * time.Second,
 		WriteTimeout:   18000 * time.Second,
-		MaxHeaderBytes: 1 << 20,
+		MaxHeaderBytes: 2000 << 20,
 	}
 	if err := s.ListenAndServe(); err != nil {
 		_ = fmt.Errorf("fatal error description: %s", strings.ToLower(err.Error()))

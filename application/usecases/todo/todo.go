@@ -4,6 +4,7 @@ import (
 	activityDomain "skyshi_gethired/domain/activity"
 	todoDomain "skyshi_gethired/domain/todo"
 	todoRepository "skyshi_gethired/infrastructure/repository/mysql/todo"
+	"strconv"
 )
 
 // Service is a struct that contains the repository implementation for todo use case
@@ -32,18 +33,18 @@ func (s *Service) GetByActivity(activityID string) (todos []todoDomain.Todo, err
 }
 
 // GetByID is a function that returns a todo by id
-func (s *Service) GetByID(id uint) (*todoDomain.Todo, error) {
+func (s *Service) GetByID(id string) (*todoDomain.Todo, error) {
 	return s.TodoRepository.GetByID(id)
 }
 
 // GetActivity is a function that returns a todo by id
-func (s *Service) GetActivity(id uint) (*activityDomain.Activity, error) {
+func (s *Service) GetActivity(id string) (*activityDomain.Activity, error) {
 	return s.TodoRepository.GetActivity(id)
 }
 
 // Create is a function that creates a todo
 func (s *Service) Create(todo *NewTodo) (*todoDomain.Todo, error) {
-	_, err := s.TodoRepository.GetActivity(*todo.ActivityGroupID)
+	_, err := s.TodoRepository.GetActivity(strconv.Itoa(int(*todo.ActivityGroupID)))
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +54,7 @@ func (s *Service) Create(todo *NewTodo) (*todoDomain.Todo, error) {
 }
 
 // Update is a function that updates a todo by id
-func (s *Service) Update(id uint, todo *UpdateTodo) (*todoDomain.Todo, error) {
+func (s *Service) Update(id string, todo *UpdateTodo) (*todoDomain.Todo, error) {
 	todoModel := todo.toDomainMapper()
 	_, err := s.TodoRepository.Update(id, todoModel)
 	if err != nil {
@@ -64,7 +65,7 @@ func (s *Service) Update(id uint, todo *UpdateTodo) (*todoDomain.Todo, error) {
 }
 
 // Delete is a function that deletes a todo by id
-func (s *Service) Delete(id uint) error {
+func (s *Service) Delete(id string) error {
 	_, err := s.TodoRepository.GetByID(id)
 	if err != nil {
 		return err

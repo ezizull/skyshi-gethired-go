@@ -4,7 +4,6 @@ import (
 	"net/http"
 	activityUseCase "skyshi_gethired/application/usecases/activity"
 	"skyshi_gethired/infrastructure/restapi/controllers"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +23,7 @@ func (c *Controller) GetActivities(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+	ctx.JSON(http.StatusOK, controllers.DefaultResponse{
 		Status:  "Success",
 		Message: "Success",
 		Data:    activities,
@@ -33,26 +32,17 @@ func (c *Controller) GetActivities(ctx *gin.Context) {
 
 // GetActivityByID is the controller to get a activity by id
 func (c *Controller) GetActivityByID(ctx *gin.Context) {
-	activityIDStr := ctx.Param("id")
-	activityID, err := strconv.ParseUint(activityIDStr, 10, 64)
+	activityID := ctx.Param("id")
+	activities, err := c.ActivityService.GetByID(activityID)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
 			Status:  "Not Found",
-			Message: ("Activity with ID " + activityIDStr + " Not Found"),
+			Message: ("Activity with ID " + activityID + " Not Found"),
 		})
 		return
 	}
 
-	activities, err := c.ActivityService.GetByID(uint(activityID))
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
-			Status:  "Not Found",
-			Message: ("Activity with ID " + activityIDStr + " Not Found"),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+	ctx.JSON(http.StatusOK, controllers.DefaultResponse{
 		Status:  "Success",
 		Message: "Success",
 		Data:    activities,
@@ -80,7 +70,7 @@ func (c *Controller) NewActivity(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+	ctx.JSON(http.StatusCreated, controllers.DefaultResponse{
 		Status:  "Success",
 		Message: "Success",
 		Data:    activities,
@@ -89,15 +79,7 @@ func (c *Controller) NewActivity(ctx *gin.Context) {
 
 // UpdateActivity is the controller to update a activity
 func (c *Controller) UpdateActivity(ctx *gin.Context) {
-	activityIDStr := ctx.Param("id")
-	activityID, err := strconv.ParseInt(activityIDStr, 10, 64)
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
-			Status:  "Not Found",
-			Message: ("Activity with ID " + activityIDStr + " Not Found"),
-		})
-		return
-	}
+	activityID := ctx.Param("id")
 
 	// Get body data for updateactivity
 	activityBody, message := updateValidation(ctx)
@@ -110,16 +92,16 @@ func (c *Controller) UpdateActivity(ctx *gin.Context) {
 	}
 
 	// Get single activity for
-	activities, err := c.ActivityService.Update(uint(activityID), activityBody)
+	activities, err := c.ActivityService.Update(activityID, activityBody)
 	if err != nil || activities == nil {
 		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
 			Status:  "Not Found",
-			Message: ("Activity with ID " + strconv.Itoa(int(activityID)) + " Not Found"),
+			Message: ("Activity with ID " + activityID + " Not Found"),
 		})
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+	ctx.JSON(http.StatusOK, controllers.DefaultResponse{
 		Status:  "Success",
 		Message: "Success",
 		Data:    activities,
@@ -128,21 +110,12 @@ func (c *Controller) UpdateActivity(ctx *gin.Context) {
 
 // DeleteActivity is the controller to delete a activity
 func (c *Controller) DeleteActivity(ctx *gin.Context) {
-	activityIDStr := ctx.Param("id")
-	activityID, err := strconv.ParseUint(activityIDStr, 10, 64)
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
-			Status:  "Not Found",
-			Message: ("Activity with ID " + activityIDStr + " Not Found"),
-		})
-		return
-	}
-
-	err = c.ActivityService.Delete(uint(activityID))
+	activityID := ctx.Param("id")
+	err := c.ActivityService.Delete(activityID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, controllers.ErrorResponse{
 			Status:  "Not Found",
-			Message: ("Activity with ID " + strconv.Itoa(int(activityID)) + " Not Found"),
+			Message: ("Activity with ID " + activityID + " Not Found"),
 		})
 		return
 	}

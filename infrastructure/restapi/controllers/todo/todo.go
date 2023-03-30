@@ -15,9 +15,9 @@ type Controller struct {
 
 // GetAllTodos is the controller to getall todo
 func (c *Controller) GetAllTodos(ctx *gin.Context) {
-	activityGroupIDStr := ctx.DefaultQuery("activity_group_id", "0")
-	if activityGroupIDStr != "0" {
-		todos, err := c.TodoService.GetByActivity(activityGroupIDStr)
+	activityGroupID := ctx.DefaultQuery("activity_group_id", "0")
+	if activityGroupID != "0" {
+		todos, err := c.TodoService.GetByActivity(activityGroupID)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, controllers.ErrorResponse{
 				Status:  "Error",
@@ -26,7 +26,7 @@ func (c *Controller) GetAllTodos(ctx *gin.Context) {
 			return
 		}
 
-		ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+		ctx.JSON(http.StatusOK, controllers.DefaultResponse{
 			Status:  "Success",
 			Message: "Success",
 			Data:    todos,
@@ -43,7 +43,7 @@ func (c *Controller) GetAllTodos(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+	ctx.JSON(http.StatusOK, controllers.DefaultResponse{
 		Status:  "Success",
 		Message: "Success",
 		Data:    todos,
@@ -52,26 +52,17 @@ func (c *Controller) GetAllTodos(ctx *gin.Context) {
 
 // GetTodoByID is the controller to get a todo by id
 func (c *Controller) GetTodoByID(ctx *gin.Context) {
-	todoIDStr := ctx.Param("id")
-	todoID, err := strconv.ParseUint(todoIDStr, 10, 64)
+	todoID := ctx.Param("id")
+	todos, err := c.TodoService.GetByID(todoID)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
 			Status:  "Not Found",
-			Message: ("Todo with ID " + todoIDStr + " Not Found"),
+			Message: ("Todo with ID " + todoID + " Not Found"),
 		})
 		return
 	}
 
-	todos, err := c.TodoService.GetByID(uint(todoID))
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
-			Status:  "Not Found",
-			Message: ("Todo with ID " + todoIDStr + " Not Found"),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+	ctx.JSON(http.StatusOK, controllers.DefaultResponse{
 		Status:  "Success",
 		Message: "Success",
 		Data:    todos,
@@ -99,7 +90,7 @@ func (c *Controller) NewTodo(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+	ctx.JSON(http.StatusCreated, controllers.DefaultResponse{
 		Status:  "Success",
 		Message: "Success",
 		Data:    todos,
@@ -108,15 +99,7 @@ func (c *Controller) NewTodo(ctx *gin.Context) {
 
 // UpdateTodo is the controller to update a todo
 func (c *Controller) UpdateTodo(ctx *gin.Context) {
-	todoIDStr := ctx.Param("id")
-	todoID, err := strconv.ParseInt(todoIDStr, 10, 64)
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
-			Status:  "Not Found",
-			Message: ("Todo with ID " + todoIDStr + " Not Found"),
-		})
-		return
-	}
+	todoID := ctx.Param("id")
 
 	// Get body data for updatetodo
 	todoBody, message := updateValidation(ctx)
@@ -129,11 +112,11 @@ func (c *Controller) UpdateTodo(ctx *gin.Context) {
 	}
 
 	// Get single todo for
-	todos, err := c.TodoService.Update(uint(todoID), todoBody)
-	if err != nil || todos == nil {
+	todos, err := c.TodoService.Update(todoID, todoBody)
+	if err != nil {
 		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
 			Status:  "Not Found",
-			Message: ("Todo with ID " + strconv.Itoa(int(todoID)) + " Not Found"),
+			Message: ("Todo with ID " + todoID + " Not Found"),
 		})
 		return
 	}
@@ -147,26 +130,17 @@ func (c *Controller) UpdateTodo(ctx *gin.Context) {
 
 // DeleteTodo is the controller to delete a todo
 func (c *Controller) DeleteTodo(ctx *gin.Context) {
-	todoIDStr := ctx.Param("id")
-	todoID, err := strconv.ParseUint(todoIDStr, 10, 64)
+	todoID := ctx.Param("id")
+	err := c.TodoService.Delete(todoID)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, controllers.ErrorResponse{
 			Status:  "Not Found",
-			Message: ("Todo with ID " + todoIDStr + " Not Found"),
+			Message: ("Todo with ID " + todoID + " Not Found"),
 		})
 		return
 	}
 
-	err = c.TodoService.Delete(uint(todoID))
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, controllers.ErrorResponse{
-			Status:  "Not Found",
-			Message: ("Todo with ID " + strconv.Itoa(int(todoID)) + " Not Found"),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+	ctx.JSON(http.StatusOK, controllers.DefaultResponse{
 		Status:  "Success",
 		Message: "Success",
 		Data:    gin.H{},

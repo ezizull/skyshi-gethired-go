@@ -17,9 +17,9 @@ type Security struct {
 }
 
 func ApplicationV1Router(router *gin.Engine, db *gorm.DB) {
-	// TodoRoutes is a routes group of the todo
-	TodoRoutes(router, adapter.TodoAdapter(db))
-
 	// ActivityRoutes is a routes group of the todo
 	ActivityRoutes(router, adapter.ActivityAdapter(db))
+
+	// TodoRoutes is a routes group of the todo
+	TodoRoutes(router, adapter.TodoAdapter(db))
 }

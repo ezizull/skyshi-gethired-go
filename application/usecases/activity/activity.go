@@ -20,12 +20,12 @@ func (s *Service) GetAll() (todos []activityDomain.Activity, err error) {
 }
 
 // GetByID is a function that returns a activity by id
-func (s *Service) GetByID(id uint) (*activityDomain.Activity, error) {
+func (s *Service) GetByID(id string) (*activityDomain.Activity, error) {
 	return s.ActivityRepository.GetByID(id)
 }
 
 // GetActivity is a function that returns a activity by id
-func (s *Service) GetActivity(id uint) (*activityDomain.Activity, error) {
+func (s *Service) GetActivity(id string) (*activityDomain.Activity, error) {
 	return s.ActivityRepository.GetActivity(id)
 }
 
@@ -36,7 +36,7 @@ func (s *Service) Create(activity *NewActivity) (*activityDomain.Activity, error
 }
 
 // Update is a function that updates a activity by id
-func (s *Service) Update(id uint, activity *UpdateActivity) (*activityDomain.Activity, error) {
+func (s *Service) Update(id string, activity *UpdateActivity) (*activityDomain.Activity, error) {
 	todoModel := activity.toDomainMapper()
 	_, err := s.ActivityRepository.Update(id, todoModel)
 	if err != nil {
@@ -47,7 +47,7 @@ func (s *Service) Update(id uint, activity *UpdateActivity) (*activityDomain.Act
 }
 
 // Delete is a function that deletes a activity by id
-func (s *Service) Delete(id uint) error {
+func (s *Service) Delete(id string) error {
 	_, err := s.ActivityRepository.GetByID(id)
 	if err != nil {
 		return err

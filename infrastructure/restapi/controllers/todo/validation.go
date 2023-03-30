@@ -19,9 +19,9 @@ func createValidation(ctx *gin.Context) (todoBody *todoUseCase.NewTodo, message 
 		return nil, "activity_group_id"
 	}
 
-	if todoBody.IsActive == nil {
-		return nil, "is_active"
-	}
+	// if todoBody.IsActive == nil {
+	// 	return nil, "is_active"
+	// }
 
 	return todoBody, message
 }
