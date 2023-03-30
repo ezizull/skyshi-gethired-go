@@ -1,9 +1,7 @@
 FROM golang:1.20-alpine 
-WORKDIR /app/src/skyshi_gethired
-ENV GOPATH=/app
+WORKDIR /usr/src/app
 
-COPY . /app/src/skyshi_gethired
+COPY . .
 
-RUN go build -o main
+RUN go mod tidy
 
-CMD ["./main"]

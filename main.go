@@ -30,8 +30,6 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("Check ")
-
 	router.Use(middlewares.GinBodyLogMiddleware)
 	router.Use(errorsController.Handler)
 

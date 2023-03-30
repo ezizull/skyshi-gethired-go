@@ -8,24 +8,32 @@ services:
     restart: on-failure
     ports:
       - "3030:3030"
+    volumes:
+      - .:/usr/src/app
     depends_on:
       - mysql
-    links:
-      - mysql
     environment:
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USER=root
-      - DB_PASSWORD=root
-      - DB_DBNAME=skyshi_gethired
+      - DB_HOST=${MYSQL_HOST}
+      - DB_PORT=${MYSQL_PORT}
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_NAME=${MYSQL_DBNAME}
+      # - GOPATH=/app
+    command: go run main.go -b 0.0.0.0
+
   mysql:
     container_name: skyshi_gethired_mysql
     image: mysql:latest
+    restart: always
     ports:
-      - "3036:3036"
+      - "8090:8090"
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DBNAME}
     volumes:
-      - ./mysql_data:/var/lib/mysql
-      - ./mysql:/docker-entrypoint-initdb.d
+      - mysql_db:/lib/mysql
+
+volumes:
+  mysql_db:
