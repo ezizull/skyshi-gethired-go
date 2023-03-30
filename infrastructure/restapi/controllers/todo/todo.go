@@ -121,7 +121,7 @@ func (c *Controller) UpdateTodo(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, controllers.DefaultResponse{
+	ctx.JSON(http.StatusOK, controllers.DefaultResponse{
 		Status:  "Success",
 		Message: "Success",
 		Data:    todos,
