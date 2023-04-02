@@ -7,7 +7,7 @@ services:
       dockerfile: ./docker/restapi.dockerfile
     restart: on-failure
     ports:
-      - "8090:3030"
+      - "3030:3030"
     image: ezizull/skyshi-gethired:latest
     volumes:
       - .:/app
