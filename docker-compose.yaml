@@ -10,9 +10,9 @@ services:
       - "8090:3030"
     image: ezizull/skyshi-gethired:latest
     volumes:
-      - .:/usr/src/app
+      - .:/app
     environment:
-      - GOPATH=/usr/src/app
+      - GOPATH=/app
       - MYSQL_HOST=${MYSQL_HOST}
       - MYSQL_PORT=${MYSQL_PORT}
       - MYSQL_USER=${MYSQL_USER}
