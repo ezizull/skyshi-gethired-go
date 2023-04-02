@@ -8,7 +8,7 @@ import (
 type NewTodo struct {
 	ActivityGroupID *uint   `json:"activity_group_id" example:"1" gorm:"foreignKey:ID"`
 	Title           *string `json:"title" example:"title todo"`
-	IsActive        *bool   `json:"is_active" example:"false"`
+	IsActive        *bool   `json:"is_active" example:"true" gorm:"default:true"`
 }
 
 // UpdateTodo is a struct that contains the data for a update todo

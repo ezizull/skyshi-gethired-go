@@ -17,8 +17,11 @@ func (n *NewTodo) toDomainMapper(todoPriority string) (todo *todoDomain.Todo) {
 
 	if n.IsActive != nil {
 		todo.IsActive = *n.IsActive
+	} else {
+		todo.IsActive = true
 	}
 
+	todo.Priority = "very-high"
 	return todo
 }
 

@@ -8,7 +8,7 @@ import (
 // NewGorm is a function that returns a gorm database connection using  initial configuration
 func NewGorm() (gormDB *gorm.DB, err error) {
 	var infoPg infoDatabaseMySQL
-	err = infoPg.getMysqlConn("Databases.MySQL.Docker")
+	err = infoPg.getMysqlConn("Databases.MySQL.Localhost")
 	if err != nil {
 		return nil, err
 	}
